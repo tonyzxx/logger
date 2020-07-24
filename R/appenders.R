@@ -444,15 +444,15 @@ appender_bigquery <- function(project, dest_table) {
 
     structure(
         function(lines) {
-            data <- fromJSON(lines)
+            data <- jsonlite::fromJSON(lines)
             query <- paste0(
-            "INSERT ", dest_table, " (timestamp, log) ",
-            "VALUES (",
-                "TIMESTAMP('", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "', 'Asia/Taipei'),",
-                "'", lines, "'",
+                "INSERT ", dest_table, " (timestamp, log) ",
+                "VALUES (",
+                    "TIMESTAMP('", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "', 'Asia/Taipei'),",
+                    "'", lines, "'",
                 ")"
             )
-            bq_perform_query(
+            bigrquery::bq_perform_query(
                 query = query,
                 billing = project,
                 create_disposition = "CREATE_IF_NEEDED",

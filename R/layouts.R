@@ -151,10 +151,11 @@ layout_logging <- structure(function(level, msg, namespace = NA_character_,
 
 layout_teams <- structure(function(level, msg, namespace = NA_character_,
                                      .logcall = sys.call(), .topcall = sys.call(-1), .topenv = parent.frame()) {
-    paste0(' [', format(Sys.time(), "%Y-%m-%d %H:%M:%S"), '] ',
-           ' `', attr(level, 'level'), '` ',
-           ' [', namespaces$app, '] ', ':',
-           msg)
+    paste0(
+           ' `', attr(level, 'level'), '` ', ':',
+           ' [', namespaces$app, '] ',
+           msg
+    )
 }, generator = quote(layout_teams()))
 
 layout_bigquery <- structure(function(level, msg, namespace = NA_character_,
