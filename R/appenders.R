@@ -437,12 +437,10 @@ appender_teams <- function(webhook_url) {
     )
 }
 
-appender_bigquery <- function(project, dest_table, credentials) {
+appender_bigquery <- function(project, dest_table) {
     fail_on_missing_package('bigrquery')
     force(project)
     force(dest_table)
-    force(credentials)
-    bigrquery::bq_auth(path = credentials)
 
     structure(
         function(lines) {
