@@ -426,4 +426,43 @@ appender_async <- function(appender, batch = 1, namespace = 'async_logger',
 
 }
 
+appender_teams <- function(webhook_url) {
+    fail_on_missing_package('httr')
+    force(webhook_url)
+
+    structure(
+        function(lines) {
+            httr::POST(url = webhook_url, body = list(text = lines),encode = "json")
+        }, generator = deparse(match.call())
+    )
+}
+
+appender_bigquery <- function(project, dest_table, credentials) {
+    fail_on_missing_package('bigrquery')
+    force(project)
+    force(dest_table)
+    force(credentials)
+    bigrquery::bq_auth(path = credentials)
+
+    structure(
+        function(lines) {
+            data <- fromJSON(lines)
+            query <- paste0(
+            "INSERT ", dest_table, " (timestamp, log) ",
+            "VALUES (",
+                "TIMESTAMP('", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "', 'Asia/Taipei'),",
+                "'", lines, "'",
+                ")"
+            )
+            bq_perform_query(
+                query = query,
+                billing = project,
+                create_disposition = "CREATE_IF_NEEDED",
+                write_disposition = "WRITE_APPEND",
+                use_legacy_sql = FALSE,
+                priority = "INTERACTIVE"
+            )
+        }, generator = deparse(match.call())
+    )   
+}
 ## TODO other appenders: graylog, datadog, cloudwatch, email via sendmailR, ES etc

@@ -149,6 +149,27 @@ layout_logging <- structure(function(level, msg, namespace = NA_character_,
            msg)
 }, generator = quote(layout_simple()))
 
+layout_teams <- structure(function(level, msg, namespace = NA_character_,
+                                     .logcall = sys.call(), .topcall = sys.call(-1), .topenv = parent.frame()) {
+    paste0(' [', format(Sys.time(), "%Y-%m-%d %H:%M:%S"), '] ',
+           ' `', attr(level, 'level'), '` ',
+           ' [', namespaces$app, '] ', ':',
+           msg)
+}, generator = quote(layout_teams()))
+
+layout_bigquery <- structure(function(level, msg, namespace = NA_character_,
+                                     .logcall = sys.call(), .topcall = sys.call(-1), .topenv = parent.frame()) {
+    fail_on_missing_package('jsonlite')
+
+    jsonlite::toJSON(
+        list(
+            timestamp = format(Sys.time(), "%Y-%m-%d %H:%M:%S"),
+            level = attr(level, 'level'),
+            app = namespaces$app,
+            log = msg
+        ), auto_unbox = TRUE
+    )
+}, generator = quote(layout_bigquery()))
 
 #' Format a log message with \code{glue}
 #'

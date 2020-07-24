@@ -35,7 +35,9 @@ Suggests:
   callr,
   txtq,
   botor,
-  R.utils
+  R.utils,
+  httr,
+  bigrquery
 Enhances:
   logging,
   futile.logger,

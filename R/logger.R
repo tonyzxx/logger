@@ -126,11 +126,11 @@ log_threshold <- function(level, namespace = 'global', index = 1) {
 #' log_info(42)
 #' }
 #' @seealso \code{\link{logger}}, \code{\link{log_threshold}}, \code{\link{log_appender}} and \code{\link{log_formatter}}
-log_layout <- function(layout, namespace = 'global', index = 1) {
+log_layout <- function(layout, app_name = 'main', namespace = 'global', index = 1) {
 
     if (length(namespace) > 1) {
         for (ns in namespace) {
-            log_layout(layout, ns, index)
+            log_layout(layout, app, ns, index)
         }
         return(invisible())
     }
@@ -149,6 +149,7 @@ log_layout <- function(layout, namespace = 'global', index = 1) {
     config$layout <- layout
     configs[[min(index, length(config) + 1)]] <- config
     assign(namespace, configs, envir = namespaces)
+    assign("app", app_name, envir = namespaces)
 
 }
 
